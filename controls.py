@@ -19,7 +19,8 @@ class Controls_Handler():
 
     def navigate_menu(self, actions):
         # Move the cursor up and down
-        if actions["Down"]: self.curr_index = (self.curr_index + 1) % (len(self.save_file["controls"][str(self.curr_block)]) + 1)
+        if actions["Down"]: 
+            self.curr_index = (self.curr_index + 1) % (len(self.save_file["controls"][str(self.curr_block)]) + 1)
         if actions["Up"]: self.curr_index = (self.curr_index - 1) % (len(self.save_file["controls"][str(self.curr_block)]) + 1)
         # Switch between profiles
         if actions["Left"]: self.curr_block = (self.curr_block -1) % len(self.save_file["controls"]) 
@@ -31,6 +32,7 @@ class Controls_Handler():
                 self.controls = self.save_file["controls"][str(self.curr_block)]
                 self.save_file["current_profile"] = self.curr_block
                 write_save(self.save_file)
+
             else: 
                 self.selected = True
 
@@ -45,14 +47,14 @@ class Controls_Handler():
                         sys.exit()
                     elif event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
+                            self.selected = False
                             done = True
-                            pygame.quit()
-                            sys.exit()
                         elif event.key not in self.save_file["controls"][str(self.curr_block)].values():
                             self.save_file["controls"][str(self.curr_block)][selected_control] = event.key
                             write_save(self.save_file)
                             self.selected = False
                             done = True
+         
 
     def display_controls(self,surface, controls):
         color = (255,13,5) if self.selected else (255,250,239)

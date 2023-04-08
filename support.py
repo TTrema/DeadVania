@@ -101,10 +101,10 @@ def create_save():
     "controls":{
         "0" :{"Left": pygame.K_LEFT, "Right": pygame.K_RIGHT, "Up": pygame.K_UP, "Down": pygame.K_DOWN, 
             "Jump": pygame.K_SPACE, "Attack": pygame.K_a,"Magic": pygame.K_s, 
-            "Dodge": pygame.K_LSHIFT, "Start": pygame.K_ESCAPE, "Select": pygame.K_m},
+            "Dodge": pygame.K_LSHIFT, "Start": pygame.K_RETURN, "Select": pygame.K_m},
         "1" :{"Left": pygame.K_LEFT, "Right": pygame.K_RIGHT, "Up": pygame.K_UP, "Down": pygame.K_DOWN, 
             "Jump": pygame.K_SPACE, "Attack": pygame.K_a,"Magic": pygame.K_s, 
-            "Dodge": pygame.K_LSHIFT, "Start": pygame.K_ESCAPE, "Select": pygame.K_m}
+            "Dodge": pygame.K_LSHIFT, "Start": pygame.K_RETURN, "Select": pygame.K_m}
         },
     "current_profile": 0
     }
