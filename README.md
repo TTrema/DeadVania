@@ -11,6 +11,7 @@
 <ul>
 <li>Uma fase teste</li>
 <li>Configuração de botão do teclado</li>
+<li>Suporte a joystick(experimental)</li>
 </ul>
 
 

@@ -36,6 +36,8 @@ class Game:
         self.joystick = self.control_handler.joystick
         self.joy = pygame.joystick.Joystick(0).get_button
 
+        
+
         """ sound """
 
         main_sound = pygame.mixer.Sound("./audio/main.ogg")
@@ -46,107 +48,95 @@ class Game:
         self.playing = True
 
         while self.playing:
-            event = None
+            self.keypress = pygame.key.get_pressed()
+            self.hat_0 = pygame.joystick.Joystick(0).get_hat(0)[1]
+            self.axis_1 = pygame.joystick.Joystick(0).get_axis(1)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                    
+                    
+
+                """ keyboard inputs """
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == self.control_handler.controls["Start"]:
+                        self.playing = False
+
+                    if event.key == self.control_handler.controls["Dodge"]:
+                        self.backdash()
+
+                    if event.key == self.control_handler.controls["Down"] and self.player.attack_id == "backdash":
+                        self.player.recovery = False
+
+                    if event.key == self.control_handler.controls["Attack"]:
+                        self.attack()
+
+                    if event.key == self.control_handler.controls["Jump"] and self.keypress[self.control_handler.controls["Down"]]:
+                        self.dive_kick()
+
+                    if event.key == self.control_handler.controls["Jump"]:
+                        self.double_jump()
+
+                    if event.key == self.control_handler.controls["Jump"]:
    
-            print(actions['Down'])
-     
+                        self.jump()
+
+                    if event.key == self.control_handler.controls["Magic"]:
+                        self.magic()
+
+                    if event.key == self.control_handler.controls["Select"]:
+                        self.level.toggle_menu()
+
+                elif event.type == pygame.KEYUP:
+                    if event.key == self.control_handler.controls["Jump"]:
+                        self.player.jumping = False
 
 
-            """ player movement """    
-            
-            if actions['Up']:
-                self.player.hold_up = True
-            else:
-                self.player.hold_up = False
-                
-            if actions['Down']:
-                if self.player.status == "fall" or "divekck":
-                    self.player.jumpdown = True
-                self.player.crouch = True
-            else:
-                self.player.crouch = False
-
-            if actions['Right'] and not self.player.recovery:
-            
-                self.player.direction.x = 1
-                self.player.facing_right = True
-
-            elif actions['Left'] and not self.player.recovery:
-                self.player.direction.x = -1
-                self.player.facing_right = False
-            else:
-                self.player.direction.x = 0
-                                                 
-            """ keyboard inputs """
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == self.control_handler.controls["Start"]:
-                    self.playing = False
-
-                if event.key == self.control_handler.controls["Dodge"]:
-                    self.backdash()
-
-                if event.key == self.control_handler.controls["Down"] and self.player.attack_id == "backdash":
-                    self.player.recovery = False
-
-                if event.key == self.control_handler.controls["Attack"]:
-                    self.attack()
-
-                if event.key == self.control_handler.controls["Jump"]:
-                    self.dive_kick()
-
-                if event.key == self.control_handler.controls["Jump"]:
-                    self.double_jump()
-
-                if event.key == self.control_handler.controls["Jump"]:
-                    self.jump()
-
-                if event.key == self.control_handler.controls["Magic"]:
-                    self.magic()
-
-                if event.key == self.control_handler.controls["Select"]:
-                    self.level.toggle_menu()
-
-            elif event.type == pygame.KEYUP:
-                if event.key == self.control_handler.controls["Jump"]:
-                    self.player.jumping = False
+                """ joystick inputs """
 
 
-            """ joystick inputs """
+                if event.type == pygame.JOYBUTTONDOWN:
+                    if self.joy(self.joystick["Start"]):
+                        self.playing = False
+
+                    elif self.joy(self.joystick["Dodge"]):
+                        self.backdash()
+
+                    elif self.joy(self.joystick["Attack"]):
+                        self.attack()
+
+                    if self.joy(self.joystick["Jump"]) and (self.hat_0 == -1 or self.axis_1 > 0.2):
+                        self.dive_kick()
+
+                    if self.joy(self.joystick["Jump"]):
+                        self.double_jump()
+
+                    if self.joy(self.joystick["Jump"]):
+                        self.jump()
+
+                    if self.joy(self.joystick["Magic"]):
+                        self.magic()
+
+                    if self.joy(self.joystick["Select"]):
+                        self.level.toggle_menu()
+
+                elif event.type == pygame.JOYBUTTONUP:
+                    if event.button == self.joystick["Jump"]:
+                        self.player.jumping = False
 
 
-            if event.type == pygame.JOYBUTTONDOWN:
-                if self.joy(self.joystick["Start"]):
-                    self.playing = False
-
-                elif self.joy(self.joystick["Dodge"]):
-                    self.backdash()
-
-                if self.joy(self.joystick["Select"] and self.player.attack_id == "backdash"):
-                    pass
-
-                elif self.joy(self.joystick["Attack"]):
-                    self.attack()
-
-                if self.joy(self.joystick["Jump"]):
-                    self.dive_kick()
-
-                if self.joy(self.joystick["Jump"]):
-                    self.double_jump()
-
-                if self.joy(self.joystick["Jump"]):
-                    self.jump()
-
-                if self.joy(self.joystick["Magic"]):
-                    self.magic()
-
-                if self.joy(self.joystick["Select"]):
-                    self.level.toggle_menu()
-
-            elif event.type == pygame.JOYBUTTONUP:
-                if event.button == self.joystick["Jump"]:
-                    self.player.jumping = False
-
+                if event.type == pygame.JOYHATMOTION:
+                    hat = pygame.joystick.Joystick(0).get_hat(0)
+                    if hat[1] == -1 and self.player.attack_id == "backdash":  # down
+                        self.player.recovery = False
+                        print('righttt')
+                        
+                if event.type == pygame.JOYAXISMOTION:
+                    if pygame.joystick.Joystick(0).get_axis(1) > 0.5:
+                        self.player.recovery = False
 
             self.screen.fill("black")
             self.level.run()
@@ -171,16 +161,21 @@ class Game:
             self.player.weapon_attack_sound.play()
 
     def jump(self):
+
         if not self.player.recovery and (self.player.on_ground or self.player.status == "wallhang"):
             self.player.start_height = self.player.collision_rect.bottom
             self.player.start_width = self.player.collision_rect.right
+            print('abb')
 
-            if pygame.key.get_pressed()[self.control_handler.controls["Down"]]:
+            if self.hat_0 == -1 or self.axis_1 > 0.2 or self.keypress[self.player.control_handler.controls["Down"]]:
                 self.player.jumpdown = True
-
+                
             else:
+
                 if self.player.status == "wallhang":
                     self.player.walljump = True
+                    
+            
 
                 self.player.jumping = True
 
@@ -192,11 +187,10 @@ class Game:
             self.player.jumping = True
 
     def dive_kick(self):
-        if pygame.key.get_pressed()[self.control_handler.controls["Down"]]:
-            if not self.player.d_jump_on and not self.player.recovery:
-                self.player.direction.y = 0
-                self.player.attack_id = "divekick"
-                self.player.divekick()
+        if not self.player.d_jump_on and not self.player.recovery:
+            self.player.direction.y = 0
+            self.player.attack_id = "divekick"
+            self.player.divekick()
 
     def magic(self):
         if not self.player.recovery:
@@ -231,9 +225,6 @@ class MainMenu:
         image = pygame.image.load(image_path).convert_alpha()
         image = pygame.transform.scale(image, (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.screen.blit(image, position)
-
-    def playerdata(self, player):
-        pass
 
     def run(self):
         self.selected = 0

@@ -121,7 +121,7 @@ def create_save():
     return new_save
 
 def create_joy_save():
-    new_save = {"joy": {"Jump": 0, "Attack": 2, "Magic": 3, "Dodge": 5, "Start": 7, "Select": 6}}
+    new_save = {"joy": {"Jump": 0, "Attack": 2, "Magic": 3, "Dodge": 4, "Start": 7, "Select": 6}}
     return new_save
     
 

@@ -5,6 +5,7 @@ from support import *
 from entity import Entity
 from controls import Controls_Handler
 from support import load_save
+from movement import movement
 
 
 
@@ -71,7 +72,7 @@ class Player(Entity):
         self.weapon_attack_sound.set_volume(0.4)
 
     def input(self):
-        pass
+        movement(self)
 
             
         
