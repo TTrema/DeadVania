@@ -58,6 +58,7 @@ class Entity(pygame.sprite.Sprite):
                 if self.direction.y < 0:
                     self.collision_rect.top = sprite.rect.bottom
                     self.direction.y = 0
+                    self.jumping = False
                 if self.direction.y > 0:
                     self.collision_rect.bottom = sprite.rect.top
                     self.direction.y = 0

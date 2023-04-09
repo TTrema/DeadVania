@@ -7,6 +7,7 @@ from controls import Controls_Handler
 from support import load_save
 
 
+
 class Player(Entity):
     def __init__(self, pos, groups, collision_sprites, create_attack, destroy_attack, create_magic, jumpable_sprites):
         super().__init__(groups)
@@ -38,6 +39,7 @@ class Player(Entity):
         self.walljump = False
         self.dive_kick = False
         self.player = True
+        self.crouch = False
         self.collision_sprites = collision_sprites
         self.jumpable_sprites = jumpable_sprites
 
@@ -61,30 +63,18 @@ class Player(Entity):
         self.invulnerability = 500
 
         """ controls """
-        save = load_save()
-        self.control_handler = Controls_Handler(save)
+        save, joy_save = load_save()
+        self.control_handler = Controls_Handler(save, joy_save)
 
         """ Soun """
         self.weapon_attack_sound = pygame.mixer.Sound("./audio/sword.wav")
         self.weapon_attack_sound.set_volume(0.4)
 
     def input(self):
-        keys = pygame.key.get_pressed()
+        pass
 
-        if keys[self.control_handler.controls['Up']]:
-            self.hold_up = True
-        else:
-            self.hold_up = False
-
-        if keys[self.control_handler.controls['Right']] and not self.recovery:
-            self.direction.x = 1
-            self.facing_right = True
-
-        elif keys[self.control_handler.controls['Left']] and not self.recovery:
-            self.direction.x = -1
-            self.facing_right = False
-        else:
-            self.direction.x = 0
+            
+        
 
     def cooldowns(self):
         current_time = pygame.time.get_ticks()
@@ -107,7 +97,6 @@ class Player(Entity):
             self.animations[animation] = import_folder(full_path)
 
     def get_status(self):
-        keys = pygame.key.get_pressed()
 
         if self.walljump:
             if self.on_right:
@@ -132,9 +121,7 @@ class Player(Entity):
             self.direction.y = 0
 
         elif self.dive_kick:
-            self.status = 'divekick'
-            if pygame.key.get_pressed()[pygame.K_DOWN]:
-                            self.jumpdown = True
+            self.status = 'divekick'                        
 
         else:
 
@@ -145,15 +132,15 @@ class Player(Entity):
                 if self.direction.y < 0:
                     self.status = "jump"
 
-                elif keys[pygame.K_DOWN] and self.on_ground:
+                elif self.crouch and self.on_ground:
                     self.status = "crouch"
                     self.direction.x = 0
 
                 elif self.direction.y > 1:
 
                         self.status = "fall"
-                        if pygame.key.get_pressed()[pygame.K_DOWN]:
-                            self.jumpdown = True
+
+                            
 
                 else:
                     if self.direction.x != 0:

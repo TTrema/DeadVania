@@ -84,16 +84,25 @@ def load_existing_save(savefile):
 def write_save(data):
     with open(os.path.join(os.getcwd(),'save.json'), 'w') as file:
         json.dump(data, file)
+        
+def write_joy_save(data):
+    with open(os.path.join(os.getcwd(),'joy.json'), 'w') as file:
+        json.dump(data, file)
 
 def load_save():
+    print('1')
     try:
     # Save is loaded 
+        joy_save = load_existing_save('joy.json')
         save = load_existing_save('save.json')
     except:
     # No save file, so create one
+        joy_save = create_joy_save()
+        write_joy_save(joy_save)
         save = create_save()
         write_save(save)
-    return save
+    return save, joy_save
+
 
 
 def create_save():
@@ -110,6 +119,11 @@ def create_save():
     }
 
     return new_save
+
+def create_joy_save():
+    new_save = {"joy": {"Jump": 0, "Attack": 2, "Magic": 3, "Dodge": 5, "Start": 7, "Select": 6}}
+    return new_save
+    
 
 def reset_keys(actions):
     for action in actions:

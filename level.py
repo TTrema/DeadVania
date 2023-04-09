@@ -243,7 +243,7 @@ class Level:
         self.ui.display(self.player)
         debug(self.player.status)
         debug(self.player.attack_id, 40)
-        debug(self.player.direction, 80)
+        debug(self.player.crouch, 80)
         debug(self.player.collision_rect.y, 120)
 
         if self.game_paused:
