@@ -38,7 +38,7 @@ class Game:
         self.control_handler = Controls_Handler(save, joy_save)
         self.control = self.control_handler.controls
         self.joystick = self.control_handler.joystick
-        self.keypress = pygame.key.get_pressed()
+        
 
         
 
@@ -54,6 +54,8 @@ class Game:
         
 
         while self.playing:
+            if self.level.stage_clear_flag == True:
+                self.playing = False
             
 
             for event in pygame.event.get():
@@ -63,6 +65,7 @@ class Game:
                     
                 """ Joystick setup """
                                            
+                self.keypress = pygame.key.get_pressed()                           
                 if len(joysticks) > 0:
                     self.joy = pygame.joystick.Joystick(0).get_button
                     self.hat_0 = pygame.joystick.Joystick(0).get_hat(0)[0]

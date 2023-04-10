@@ -65,6 +65,8 @@ class Entity(pygame.sprite.Sprite):
                     self.on_ground = True
                     self.d_jump_on = True
                     self.dive_kick = False
+                else:
+                    self.on_ground = False
                     
         if not self.can_fly:
             for sprite in self.jumpable_sprites.sprites():

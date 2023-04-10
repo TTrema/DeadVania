@@ -21,12 +21,14 @@ class Level:
         """ level setup """
         self.game_paused = False
         self.display_surface = pygame.display.get_surface()
+        self.stage_clear_flag = False
 
         """ sprite group setup """
         self.visible_sprites = CameraGroup()
         self.active_sprites = pygame.sprite.Group()
         self.collision_sprites = pygame.sprite.Group()
         self.jumpable_sprites = pygame.sprite.Group()
+        self.end_level_sprites = pygame.sprite.Group()
         self.ani_sprites = [self.active_sprites, self.visible_sprites]
 
         """ attack sprite """
@@ -50,48 +52,80 @@ class Level:
 
     def create_map(self):
         layouts = {
-            # "battle_background": import_csv_layout("./levels/level1/battle_background.csv"),
+            # "battle_background": import_csv_layout("./levels/level1/level1_background.csv"),
             "battle_decoration": import_csv_layout("./levels/level1/level1_decoration.csv"),
             "battle_platform": import_csv_layout("./levels/level1/level1_jumpable.csv"),
-            "battle_spawn area": import_csv_layout("./levels/level1/level1_enemy.csv"),
+            "battle_spawnarea": import_csv_layout("./levels/level1/level1_enemy.csv"),
             "battle_Tile": import_csv_layout("./levels/level1/level1_tile.csv"),
         }
-        terrain_tile_list = import_cut_graphics_size("./levels/Tiles.png", 16)
+        terrain_tile_list = import_cut_graphics_size("./levels/Tiles32.png", 32)
+        with open('col_info.txt', 'w') as f:
+            for style, layout in layouts.items():
+                for row_index, row in enumerate(layout):
+                    for col_index, col in enumerate(row):
 
-        for style, layout in layouts.items():
-            for row_index, row in enumerate(layout):
-                for col_index, col in enumerate(row):
+                        if int(col) > 0:
+                            f.write(str(col) + '\n')
+                            
+                            x = col_index * TILE_SIZE
+                            y = row_index * TILE_SIZE
 
-                    if col != "-1":
-                        x = col_index * TILE_SIZE
-                        y = row_index * TILE_SIZE
-
-                        tile_surface = terrain_tile_list[int(col)]
-                        if style == "battle_Tile":
-                            StaticTile((x, y), [self.visible_sprites, self.collision_sprites], tile_surface)
-                        if style == "battle_decoration":
-                            StaticTile((x, y), [self.visible_sprites], tile_surface)
-                        if style == "battle_platform":
-                            StaticTile((x, y), [self.visible_sprites], tile_surface)
-                            Bridge((x, y), [self.visible_sprites, self.jumpable_sprites])
-                        if style == "battle_background":
-                            StaticTile((x, y), [self.visible_sprites], tile_surface)
-                        if style == "battle_spawn area":
-                            if not bool(self.attackable_sprites):
-                                self.enemy = Enemy(
-                                    "smallbee",
-                                    (800, 300),
-                                    [self.ani_sprites, self.attackable_sprites],
-                                    self.collision_sprites,
-                                    self.damage_player,
-                                    self.trigger_death_particles,
-                                    self.ani_sprites,
-                                    self.add_exp,
-                                    self.jumpable_sprites,
-                                )
-        self.player = Player(
-            (400, 400), [self.ani_sprites], self.collision_sprites, self.create_attack, self.destroy_attack, self.create_magic, self.jumpable_sprites
-        )
+                            tile_surface = terrain_tile_list[int(col)]
+                            if style == "battle_Tile":
+                                StaticTile((x, y), [self.visible_sprites, self.collision_sprites], tile_surface)
+                            if style == "battle_decoration":
+                                StaticTile((x, y), [self.visible_sprites], tile_surface)
+                            if style == "battle_platform":
+                                StaticTile((x, y), [self.visible_sprites], tile_surface)
+                                Bridge((x, y), [self.visible_sprites, self.jumpable_sprites])
+                            if style == "battle_background":
+                                StaticTile((x, y), [self.visible_sprites], tile_surface)
+                            if style == "battle_spawnarea":
+                                if col == '615':
+                                    Enemy(
+                                        "smallbee",
+                                        (x, y),
+                                        [self.ani_sprites, self.attackable_sprites],
+                                        self.collision_sprites,
+                                        self.damage_player,
+                                        self.trigger_death_particles,
+                                        self.ani_sprites,
+                                        self.add_exp,
+                                        self.jumpable_sprites,
+                                    )
+                                if col == '565':
+                                    Enemy(
+                                        "worm",
+                                        (x, y),
+                                        [self.ani_sprites, self.attackable_sprites],
+                                        self.collision_sprites,
+                                        self.damage_player,
+                                        self.trigger_death_particles,
+                                        self.ani_sprites,
+                                        self.add_exp,
+                                        self.jumpable_sprites,
+                                    )    
+                                    
+                                if col == '590':
+                                    Enemy(
+                                        "slime",
+                                        (x, y),
+                                        [self.ani_sprites, self.attackable_sprites],
+                                        self.collision_sprites,
+                                        self.damage_player,
+                                        self.trigger_death_particles,
+                                        self.ani_sprites,
+                                        self.add_exp,
+                                        self.jumpable_sprites,
+                                    )
+                                    
+                                if col == '390':
+                                    self.player = Player(
+                                        (x, y), [self.ani_sprites], self.collision_sprites, self.create_attack, self.destroy_attack, self.create_magic, self.jumpable_sprites
+                                    )
+                                if col == '380':
+                                    StaticTile((x, y), [self.end_level_sprites], tile_surface)
+                                    
 
     def setup_level(self):
         for row_index, row in enumerate(LEVEL_MAP):
@@ -176,6 +210,12 @@ class Level:
                             else:
                                 target_sprite.get_damage(self.player, attack_sprite.attacktype)
 
+    def stage_clear(self):
+        for sprite in self.end_level_sprites.sprites():
+            if sprite.rect.colliderect(self.player.collision_rect):
+                self.stage_clear_flag = True
+
+
     def damage_player(self, amount, attack_type):
         if self.player.vulnerable:
             self.player.health -= amount
@@ -239,9 +279,10 @@ class Level:
 
     def run(self):
         
-        self.display_surface.blit(self.enemy.image, self.enemy.rect)
+ 
       
-        self.visible_sprites.custom_draw(self.player, self.enemy)
+        self.visible_sprites.custom_draw(self.player)
+        self.stage_clear()
         self.ui.display(self.player)
         debug(self.player.status)
         debug(self.player.attack_id, 40)
@@ -270,7 +311,7 @@ class CameraGroup(pygame.sprite.Group):
         self.half_w = self.display_surface.get_size()[0] // 2
         self.half_h = self.display_surface.get_size()[1] // 2
 
-    def custom_draw(self, player, enemy):
+    def custom_draw(self, player):
 
         """get the player offset"""
         self.offset.x = player.collision_rect.centerx - self.half_w
@@ -282,9 +323,6 @@ class CameraGroup(pygame.sprite.Group):
 
             # Draw the sprite's collision rect
         
-        monster_rect = enemy.rect.move(-self.offset.x, -self.offset.y)
-        monster_rect.inflate_ip(-30, -30)
-        
         collision_rect = player.collision_rect.move(-self.offset.x, -self.offset.y)
         if player.status == "crouch":
             collision_rect.inflate_ip(0, -30)
@@ -294,7 +332,6 @@ class CameraGroup(pygame.sprite.Group):
             collision_rect.inflate_ip(0, -30)
             collision_rect.move_ip(0, -15)
 
-        pygame.draw.rect(self.display_surface, (255, 0, 0), enemy.rect, 2)
         pygame.draw.rect(self.display_surface, (255, 0, 0), collision_rect, 2)
         
 
