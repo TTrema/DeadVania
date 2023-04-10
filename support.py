@@ -11,8 +11,9 @@ def import_folder(path):
             image_surf = pygame.image.load(full_path).convert_alpha()
             size = 64
             if 'sheet' in full_path:
-                if 'boar' in full_path:
-                    size = 32
+                if 'worm' in full_path:
+                    print(full_path)
+                    size = 90
                 image_surf2 = import_cut_graphics(full_path, size)  
                 for image in image_surf2:
                     surface_list.append(image) 

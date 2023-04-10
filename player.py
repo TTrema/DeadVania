@@ -8,7 +8,6 @@ from support import load_save
 from movement import movement
 
 
-
 class Player(Entity):
     def __init__(self, pos, groups, collision_sprites, create_attack, destroy_attack, create_magic, jumpable_sprites):
         super().__init__(groups)
@@ -74,9 +73,6 @@ class Player(Entity):
     def input(self):
         movement(self)
 
-            
-        
-
     def cooldowns(self):
         current_time = pygame.time.get_ticks()
 
@@ -91,14 +87,24 @@ class Player(Entity):
 
     def import_character_assets(self):
         character_path = "./graphics/charactern/"
-        self.animations = {"idle": [], "run": [], "jump": [], "fall": [], "attack": [], "blaze": [], "backdash": [], "crouch": [], "wallhang": [], "divekick": []}
+        self.animations = {
+            "idle": [],
+            "run": [],
+            "jump": [],
+            "fall": [],
+            "attack": [],
+            "blaze": [],
+            "backdash": [],
+            "crouch": [],
+            "wallhang": [],
+            "divekick": [],
+        }
 
         for animation in self.animations.keys():
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
 
     def get_status(self):
-
         if self.walljump:
             if self.on_right:
                 self.collision_rect.x += -10
@@ -110,7 +116,6 @@ class Player(Entity):
                     self.walljump = False
 
         if self.jumping:
-
             if self.start_height > self.collision_rect.bottom + 110:
                 self.jumping = False
             else:
@@ -122,32 +127,28 @@ class Player(Entity):
             self.direction.y = 0
 
         elif self.dive_kick:
-            self.status = 'divekick'                        
+            self.status = "divekick"
 
         else:
+            if self.status == "wallhang":
+                if not self.jumping:
+                    self.direction.y = 0
 
-                if self.status == "wallhang":
-                    if not self.jumping:
-                        self.direction.y = 0
+            if self.direction.y < 0:
+                self.status = "jump"
 
-                if self.direction.y < 0:
-                    self.status = "jump"
+            elif self.crouch and self.on_ground:
+                self.status = "crouch"
+                self.direction.x = 0
 
-                elif self.crouch and self.on_ground:
-                    self.status = "crouch"
-                    self.direction.x = 0
+            elif self.direction.y > 1:
+                self.status = "fall"
 
-                elif self.direction.y > 1:
-
-                        self.status = "fall"
-
-                            
-
+            else:
+                if self.direction.x != 0:
+                    self.status = "run"
                 else:
-                    if self.direction.x != 0:
-                        self.status = "run"
-                    else:
-                        self.status = "idle"
+                    self.status = "idle"
 
     def animate(self):
         animation = self.animations[self.status]
@@ -166,13 +167,15 @@ class Player(Entity):
 
         image = animation[int(self.frame_index)]
         if self.facing_right:
+            self.image = pygame.transform.scale(image, (int(image.get_width() * (2.5, 2.5)[0]), int(image.get_height() * (2.5, 2.5)[1])))
+            self.rect = self.image.get_rect(bottomleft=self.collision_rect.bottomleft)
             offset = -40
         else:
             image = pygame.transform.flip(image, True, False)
-            offset = -50
+            self.image = pygame.transform.scale(image, (int(image.get_width() * (2.5, 2.5)[0]), int(image.get_height() * (2.5, 2.5)[1])))
+            self.rect = self.image.get_rect(bottomright=self.collision_rect.bottomright)
+            offset = 40
 
-        self.image = pygame.transform.scale(image, (int(image.get_width() * (2.5, 2.5)[0]), int(image.get_height() * (2.5, 2.5)[1])))
-        self.rect = self.image.get_rect(bottomleft=self.collision_rect.bottomleft)
         self.rect.left += offset
 
         if not self.vulnerable:
@@ -215,15 +218,11 @@ class Player(Entity):
                         self.collision_rect.centerx -= 10
                     else:
                         self.collision_rect.centerx += 10
-        
 
     def divekick(self):
-        
         self.direction.y += 20
         self.dive_kick = True
         self.create_attack()
-            
-
 
     def update(self):
         self.input()
@@ -236,5 +235,3 @@ class Player(Entity):
         self.animate()
         self.energy_recovery()
         self.cooldowns()
-        
- 

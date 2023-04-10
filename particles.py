@@ -19,12 +19,15 @@ class AnimationPlayer:
 			'sparkle': import_folder('./graphics/particles/sparkle'),
 			'leaf_attack': import_folder('./graphics/particles/leaf_attack'),
 			'thunder': import_folder('./graphics/particles/thunder'),
+			'fireball': import_folder('./graphics/particles/fireball'),
 
 			# monster deaths
 			'smallbee': import_folder('./graphics/particles/smoke_orange'),
 			'squid': import_folder('./graphics/particles/smoke_orange'),
 			'raccoon': import_folder('./graphics/particles/raccoon'),
+			'worm': import_folder('./graphics/particles/worm'),
 			'spirit': import_folder('./graphics/particles/nova'),
+			'slime': import_folder('./graphics/particles/slime'),
 			'bamboo': import_folder('./graphics/particles/bamboo'),
 			
 			# leafs 

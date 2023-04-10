@@ -1,20 +1,35 @@
 import pygame
+from pygame._sdl2 import controller
+
+controller.init()
+
+joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
+
+
+
 
 
 def movement(player):
-    keys = pygame.key.get_pressed()
-    hat_0 = pygame.joystick.Joystick(0).get_hat(0)
-    axis_0 = pygame.joystick.Joystick(0).get_axis(0)
-    axis_1 = pygame.joystick.Joystick(0).get_axis(1)
+    keypress = pygame.key.get_pressed()
+    
+    if len(joysticks) > 0:
+        joy = pygame.joystick.Joystick(0).get_button
+        hat_0 = pygame.joystick.Joystick(0).get_hat(0)[0]
+        hat_1 = pygame.joystick.Joystick(0).get_hat(0)[1]
+        axis_0 = pygame.joystick.Joystick(0).get_axis(0)
+        axis_1 = pygame.joystick.Joystick(0).get_axis(1)
+        
+    else:
+        joy, hat_0, hat_1, axis_0, axis_1 = None, 0, 0, 0, 0
 
     """ keyboar """
 
-    if hat_0[1] or axis_1 < -0.2 or keys[player.control_handler.controls["Up"]]:
+    if hat_1 or axis_1 < -0.2 or keypress[player.control_handler.controls["Up"]]:
         player.hold_up = True
     else:
         player.hold_up = False
 
-    if hat_0[1] == -1 or axis_1 > 0.2 or keys[player.control_handler.controls["Down"]]:
+    if hat_1 == -1 or axis_1 > 0.2 or keypress[player.control_handler.controls["Down"]]:
 
         player.crouch = True
         if (player.status == "fall" or "divekck") and not player.on_ground:
@@ -22,11 +37,11 @@ def movement(player):
     else:
         player.crouch = False
 
-    if (hat_0[0] == 1 or axis_0 > 0.2 or keys[player.control_handler.controls["Right"]]) and not player.recovery:
+    if (hat_0 == 1 or axis_0 > 0.2 or keypress[player.control_handler.controls["Right"]]) and not player.recovery:
         player.direction.x = 1
         player.facing_right = True
 
-    elif (hat_0[0] == -1 or axis_0 < -0.2 or keys[player.control_handler.controls["Left"]]) and not player.recovery:
+    elif (hat_0 == -1 or axis_0 < -0.2 or keypress[player.control_handler.controls["Left"]]) and not player.recovery:
         player.direction.x = -1
         player.facing_right = False
     else:

@@ -19,16 +19,16 @@ class Attack(Base):
     def update(self):
         if self.player.attack_id == 'attack':
             if int(self.player.frame_index) >= self.startup:
-                self.image = pygame.Surface((50, 80), pygame.SRCALPHA)
+                self.image = pygame.Surface((75, 90), pygame.SRCALPHA)
                 self.image.fill((255, 255, 255))  # Set the color to transparent
                 self.image.set_alpha(128)
             if int(self.player.frame_index) >= self.recovery:
                 self.kill()
 
             if self.player.facing_right:
-                self.rect = self.image.get_rect(midleft = self.player.collision_rect.midright + pygame.math.Vector2(0,0))
+                self.rect = self.image.get_rect(midleft = self.player.collision_rect.midright + pygame.math.Vector2(-20,-12))
             else: 
-                self.rect = self.image.get_rect(midright = self.player.collision_rect.midleft + pygame.math.Vector2(0,0))
+                self.rect = self.image.get_rect(midright = self.player.collision_rect.midleft + pygame.math.Vector2(20,-12))
         else:
             self.kill()
 

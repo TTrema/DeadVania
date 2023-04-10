@@ -6,7 +6,8 @@ from support import load_save, reset_keys
 save, joy_save = load_save()
 control_handler = Controls_Handler(save, joy_save)
 joysbutton = control_handler.joystick
-joy = pygame.joystick.Joystick(0).get_button
+
+joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
 actions = {
     "Left": False,
     "Right": False,
@@ -29,6 +30,14 @@ def input():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+            
+        if len(joysticks) > 0:
+            joy = pygame.joystick.Joystick(0).get_button
+            hat_0 = pygame.joystick.Joystick(0).get_hat(0)[0]
+            hat_1 = pygame.joystick.Joystick(0).get_hat(0)[1]
+            axis_0 = pygame.joystick.Joystick(0).get_axis(0)
+            axis_1 = pygame.joystick.Joystick(0).get_axis(1)
+            keypress = pygame.key.get_pressed()
 
         if event.type == pygame.JOYDEVICEADDED:
             joystick = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]

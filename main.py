@@ -8,7 +8,11 @@ from pygame._sdl2 import controller
 
 controller.init()
 joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
-joystick = pygame.joystick.Joystick(0)
+
+
+global screen
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), flags=pygame.SCALED)
+
 
 
 class Game:
@@ -17,7 +21,7 @@ class Game:
         pygame.init()
         self.main_menu = MainMenu
         self.running, self.playing = True, False
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen = screen
         pygame.display.set_caption("Dead Vania")
         self.clock = pygame.time.Clock()
 
@@ -34,7 +38,7 @@ class Game:
         self.control_handler = Controls_Handler(save, joy_save)
         self.control = self.control_handler.controls
         self.joystick = self.control_handler.joystick
-        self.joy = pygame.joystick.Joystick(0).get_button
+        self.keypress = pygame.key.get_pressed()
 
         
 
@@ -46,17 +50,29 @@ class Game:
 
     def run(self):
         self.playing = True
+        
+        
 
         while self.playing:
-            self.keypress = pygame.key.get_pressed()
-            self.hat_0 = pygame.joystick.Joystick(0).get_hat(0)[1]
-            self.axis_1 = pygame.joystick.Joystick(0).get_axis(1)
+            
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                     
+                """ Joystick setup """
+                                           
+                if len(joysticks) > 0:
+                    self.joy = pygame.joystick.Joystick(0).get_button
+                    self.hat_0 = pygame.joystick.Joystick(0).get_hat(0)[0]
+                    self.hat_1 = pygame.joystick.Joystick(0).get_hat(0)[1]
+                    self.axis_0 = pygame.joystick.Joystick(0).get_axis(0)
+                    self.axis_1 = pygame.joystick.Joystick(0).get_axis(1)
+                else:
+                    self.joy, self.hat_0, self.hat_1, self.axis_0, self.axis_1 = None, 0, 0, 0, 0
+                    
+
                     
 
                 """ keyboard inputs """
@@ -80,8 +96,7 @@ class Game:
                     if event.key == self.control_handler.controls["Jump"]:
                         self.double_jump()
 
-                    if event.key == self.control_handler.controls["Jump"]:
-   
+                    if event.key == self.control_handler.controls["Jump"]:   
                         self.jump()
 
                     if event.key == self.control_handler.controls["Magic"]:
@@ -108,7 +123,7 @@ class Game:
                     elif self.joy(self.joystick["Attack"]):
                         self.attack()
 
-                    if self.joy(self.joystick["Jump"]) and (self.hat_0 == -1 or self.axis_1 > 0.2):
+                    if self.joy(self.joystick["Jump"]) and (self.hat_1 == -1 or self.axis_1 > 0.2):
                         self.dive_kick()
 
                     if self.joy(self.joystick["Jump"]):
@@ -129,13 +144,12 @@ class Game:
 
 
                 if event.type == pygame.JOYHATMOTION:
-                    hat = pygame.joystick.Joystick(0).get_hat(0)
-                    if hat[1] == -1 and self.player.attack_id == "backdash":  # down
+                    if self.hat_1 == -1 and self.player.attack_id == "backdash":  # down
                         self.player.recovery = False
-                        print('righttt')
+         
                         
                 if event.type == pygame.JOYAXISMOTION:
-                    if pygame.joystick.Joystick(0).get_axis(1) > 0.5:
+                    if pygame.joystick.Joystick(0).get_axis(1) > 0.5 and self.player.attack_id == "backdash":
                         self.player.recovery = False
 
             self.screen.fill("black")
@@ -165,9 +179,9 @@ class Game:
         if not self.player.recovery and (self.player.on_ground or self.player.status == "wallhang"):
             self.player.start_height = self.player.collision_rect.bottom
             self.player.start_width = self.player.collision_rect.right
-            print('abb')
+  
 
-            if self.hat_0 == -1 or self.axis_1 > 0.2 or self.keypress[self.player.control_handler.controls["Down"]]:
+            if self.hat_1 == -1 or self.axis_1 > 0.2 or self.keypress[self.player.control_handler.controls["Down"]]:
                 self.player.jumpdown = True
                 
             else:
@@ -214,7 +228,7 @@ class MainMenu:
         save, joy_save = load_save()
         self.control_handler = Controls_Handler(save, joy_save)
         self.game = Game()
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen = screen
         self.clock = pygame.time.Clock()
         self.playing = False
         self.menu_font = pygame.font.Font("./graphics/font/8-BIT WONDER.TTF", 50)

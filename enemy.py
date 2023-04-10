@@ -27,6 +27,7 @@ class Enemy(Entity):
         """ stats """
         self.monster_name = monster_name
         monster_info = monster_data[self.monster_name]
+        
         self.health = monster_info["health"]
         self.exp = monster_info["exp"]
         self.speed = monster_info["speed"]
@@ -35,6 +36,9 @@ class Enemy(Entity):
         self.attack_radius = monster_info["attack_radius"]
         self.notice_radius = monster_info["notice_radius"]
         self.attack_type = monster_info["attack_type"]
+        self.size = monster_info["size"]
+        self.offset = monster_info["offset"]
+        self.rect_size = monster_info["rect"]
         self.can_fly = bool(monster_info.get("fly", False))
         self.gravity = 1
     
@@ -121,9 +125,17 @@ class Enemy(Entity):
             self.frame_index = 0
 
         self.image = animation[int(self.frame_index)]
+        
         if self.facing_right:
             self.image = pygame.transform.flip(self.image, True, False)
-        self.rect = self.image.get_rect(center=self.collision_rect.center)
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * (self.size, self.size)[0]), int(self.image.get_height() * (self.size, self.size)[1])))
+            self.rect = self.image.get_rect(midbottom=self.collision_rect.midbottom)
+        else:
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * (self.size, self.size)[0]), int(self.image.get_height() * (self.size, self.size)[1])))
+            self.rect = self.image.get_rect(midbottom=self.collision_rect.midbottom)
+            
+       
+        
 
         if not self.vulnerable:
             alpha = self.wave_value()
@@ -213,6 +225,8 @@ class Enemy(Entity):
             self.facing_right = False
         if self.direction.x > 0:
             self.facing_right = True
+
+    
         
 
     def enemy_update(self, player):

@@ -33,7 +33,7 @@ class Level:
         self.current_attack = None
         self.can_hit = True
         self.attack_sprites = pygame.sprite.Group()
-        self.attackable_sprites = pygame.sprite.Group()
+        self.attackable_sprites = CameraGroup()
         self.attacktype = None
         self.start = pygame.time.get_ticks()
 
@@ -50,14 +50,13 @@ class Level:
 
     def create_map(self):
         layouts = {
-            "battle_background": import_csv_layout("./levels/level0/battle_background.csv"),
-            "battle_decoration": import_csv_layout("./levels/level0/battle_decoration.csv"),
-            "battle_platform": import_csv_layout("./levels/level0/battle_platform.csv"),
-            "battle_spawn area": import_csv_layout("./levels/level0/battle_spawn area.csv"),
-            "battle_Tile": import_csv_layout("./levels/level0/battle_Tile.csv"),
+            # "battle_background": import_csv_layout("./levels/level1/battle_background.csv"),
+            "battle_decoration": import_csv_layout("./levels/level1/level1_decoration.csv"),
+            "battle_platform": import_csv_layout("./levels/level1/level1_jumpable.csv"),
+            "battle_spawn area": import_csv_layout("./levels/level1/level1_enemy.csv"),
+            "battle_Tile": import_csv_layout("./levels/level1/level1_tile.csv"),
         }
-        graphics = {"grass": import_folder("./graphics/Grass"), "objects": import_folder("../graphics/objects")}
-        terrain_tile_list = import_cut_graphics_size("./graphics/terrain/tileset.png", 32)
+        terrain_tile_list = import_cut_graphics_size("./levels/Tiles.png", 16)
 
         for style, layout in layouts.items():
             for row_index, row in enumerate(layout):
@@ -204,7 +203,7 @@ class Level:
             for i in range(0, 10, 2):
                 random_position = available_positions[i]
                 self.enemy = Enemy(
-                    "smallbee",
+                    "worm",
                     random_position,
                     [self.ani_sprites, self.attackable_sprites],
                     self.collision_sprites,
@@ -216,7 +215,7 @@ class Level:
                 )
                 random_position = available_positions[i+1]
                 self.enemy = Enemy(
-                    "squid",
+                    "slime",
                     random_position,
                     [self.ani_sprites, self.attackable_sprites],
                     self.collision_sprites,
@@ -239,7 +238,10 @@ class Level:
         self.__init__()
 
     def run(self):
-        self.visible_sprites.custom_draw(self.player)
+        
+        self.display_surface.blit(self.enemy.image, self.enemy.rect)
+      
+        self.visible_sprites.custom_draw(self.player, self.enemy)
         self.ui.display(self.player)
         debug(self.player.status)
         debug(self.player.attack_id, 40)
@@ -255,7 +257,7 @@ class Level:
             self.active_sprites.update()
             self.visible_sprites.enemy_update(self.player)
             self.player_attack_logic()
-            self.create_enemy()
+            # self.create_enemy()
 
 
 class CameraGroup(pygame.sprite.Group):
@@ -268,7 +270,7 @@ class CameraGroup(pygame.sprite.Group):
         self.half_w = self.display_surface.get_size()[0] // 2
         self.half_h = self.display_surface.get_size()[1] // 2
 
-    def custom_draw(self, player):
+    def custom_draw(self, player, enemy):
 
         """get the player offset"""
         self.offset.x = player.collision_rect.centerx - self.half_w
@@ -279,6 +281,10 @@ class CameraGroup(pygame.sprite.Group):
             self.display_surface.blit(sprite.image, offset_pos)
 
             # Draw the sprite's collision rect
+        
+        monster_rect = enemy.rect.move(-self.offset.x, -self.offset.y)
+        monster_rect.inflate_ip(-30, -30)
+        
         collision_rect = player.collision_rect.move(-self.offset.x, -self.offset.y)
         if player.status == "crouch":
             collision_rect.inflate_ip(0, -30)
@@ -288,7 +294,9 @@ class CameraGroup(pygame.sprite.Group):
             collision_rect.inflate_ip(0, -30)
             collision_rect.move_ip(0, -15)
 
+        pygame.draw.rect(self.display_surface, (255, 0, 0), enemy.rect, 2)
         pygame.draw.rect(self.display_surface, (255, 0, 0), collision_rect, 2)
+        
 
     def enemy_update(self, player):
         enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, "sprite_type") and sprite.sprite_type == "enemy"]
