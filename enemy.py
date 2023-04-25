@@ -3,6 +3,7 @@ from settings import *
 from entity import Entity
 from support import *
 import time
+from particles import AnimationPlayer
 
 
 class Enemy(Entity):
@@ -10,11 +11,13 @@ class Enemy(Entity):
         super().__init__(groups)
         self.sprite_type = "enemy"
         self.sprite_groups = sprite_groups
+        self.groups = groups
 
         """ graphic setup """
         self.import_graphics(monster_name)
         self.status = "idle"
         self.image = self.animations[self.status][self.frame_index]     
+        self.animation_player = AnimationPlayer
 
         """ movement """
         self.rect = self.image.get_rect(topleft=pos)
@@ -102,8 +105,13 @@ class Enemy(Entity):
 
         if self.status == "attack":
             self.attack_time = pygame.time.get_ticks()
-            self.damage_player(self.attack_damage, self.attack_type)
-            self.attack_sound.play()
+            if self.monster_name == 'worm':
+                self.damage_player(self.attack_damage, self.attack_type)
+                self.attack_sound.play()
+
+            else:
+                self.damage_player(self.attack_damage, self.attack_type)
+                self.attack_sound.play()
         elif self.status == "move":
             if self.can_fly:
                 self.direction = self.get_player_distance_direction(player)[1]
@@ -213,14 +221,20 @@ class Enemy(Entity):
             self.fly(self.speed)
         else:
             self.move(self.speed) 
-            if not self.on_ground:  
-                self.apply_gravity()            
+ 
+                          
             
         self.animate()
         self.check_death()
         self.cooldowns()
-        self.horizontal_collisions()
-        self.vertical_collisions()
+        if not self.can_fly:
+            self.horizontal_collisions()     
+            self.apply_gravity()  
+            self.vertical_collisions()
+        else:
+            self.vertical_collisions()
+            self.horizontal_collisions()   
+            
         if self.direction.x < 0:
             self.facing_right = False
         if self.direction.x > 0:

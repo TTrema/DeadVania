@@ -1,7 +1,9 @@
 ﻿﻿
 # Um jogo inspirado em castlevania feito no Pygame
 
+## Demonstração:
 
+![Demonstração](demo.gif)
 
 ## Características:
 

@@ -13,10 +13,10 @@ LEVEL_MAP = [
 'X                          X',
 'X        JJJ               X',
 'X                          X',
-'X               JJJ    E   X',
-'X   JJJ   B                X',
+'X               JJJ    W   X',
+'X   JJJ                    X',
 'X                          X',
-'X                     P    X',
+'X              P    XXXXXXXX',
 'XXXXXXXXXXXXXXXXXXXXXXXXXXXX']
 
 TILE_SIZE = 32

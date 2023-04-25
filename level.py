@@ -59,6 +59,7 @@ class Level:
             "battle_Tile": import_csv_layout("./levels/level1/level1_tile.csv"),
         }
         terrain_tile_list = import_cut_graphics_size("./levels/Tiles32.png", 32)
+        # self.background = pygame.image.load("./levels/level1.png").convert_alpha()
         with open('col_info.txt', 'w') as f:
             for style, layout in layouts.items():
                 for row_index, row in enumerate(layout):
@@ -107,7 +108,7 @@ class Level:
                                     )    
                                     
                                 if col == '590':
-                                    Enemy(
+                                    self.enemy = Enemy(
                                         "slime",
                                         (x, y),
                                         [self.ani_sprites, self.attackable_sprites],
@@ -123,7 +124,7 @@ class Level:
                                     self.player = Player(
                                         (x, y), [self.ani_sprites], self.collision_sprites, self.create_attack, self.destroy_attack, self.create_magic, self.jumpable_sprites
                                     )
-                                if col == '380':
+                                if col == '496':
                                     StaticTile((x, y), [self.end_level_sprites], tile_surface)
                                     
 
@@ -138,7 +139,7 @@ class Level:
                     Bridge((x, y), [self.visible_sprites, self.jumpable_sprites])
                 if col == "E":
                     self.enemy = Enemy(
-                        "squid",
+                        "slime",
                         (x, y),
                         [self.ani_sprites, self.attackable_sprites],
                         self.collision_sprites,
@@ -149,7 +150,7 @@ class Level:
                         self.jumpable_sprites,
                     )
                 if col == "B":
-                    Enemy(
+                    self.enemy = Enemy(
                         "smallbee",
                         (x, y),
                         [self.ani_sprites, self.attackable_sprites],
@@ -160,6 +161,20 @@ class Level:
                         self.add_exp,
                         self.jumpable_sprites,
                     )
+                if col == "W":
+                    self.enemy = Enemy(
+                    "worm",
+                    (x, y),
+                    [self.ani_sprites, self.attackable_sprites],
+                    self.collision_sprites,
+                    self.damage_player,
+                    self.trigger_death_particles,
+                    self.ani_sprites,
+                    self.add_exp,
+                    self.jumpable_sprites,
+                )    
+                
+ 
                 if col == "P":
                     self.player = Player(
                         (x, y),
@@ -173,9 +188,9 @@ class Level:
 
     def create_attack(self):
         if self.player.attack_id == "attack":
-            self.current_attack = Attack(self.player, [self.ani_sprites, self.attack_sprites])
+            self.current_attack = Attack(self.player, [self.active_sprites, self.attack_sprites])
         else:
-            self.current_attack = DiveAttack(self.player, [self.ani_sprites, self.attack_sprites])
+            self.current_attack = DiveAttack(self.player, [self.active_sprites, self.attack_sprites])
 
     def destroy_attack(self):
         if self.current_attack:
@@ -188,6 +203,7 @@ class Level:
             self.magic_player.heal(self.player, strength, cost, [self.ani_sprites])
         else:
             self.magic_player.flame(self.player, cost, [self.visible_sprites, self.attack_sprites, self.active_sprites])
+
 
     def player_attack_logic(self):
 
@@ -280,14 +296,14 @@ class Level:
     def run(self):
         
  
-      
-        self.visible_sprites.custom_draw(self.player)
+        # self.display_surface.blit(self.background, (0, 0))
+        self.visible_sprites.custom_draw(self.player, self.enemy)
         self.stage_clear()
         self.ui.display(self.player)
-        debug(self.player.status)
-        debug(self.player.attack_id, 40)
-        debug(self.player.crouch, 80)
-        debug(self.player.collision_rect.y, 120)
+        # debug(self.enemy.status)
+        # debug(self.enemy.on_ground, 40)
+        # debug(self.player.on_ground, 80)
+        # debug(self.player.collision_rect.y, 120)
 
         if self.game_paused:
 
@@ -311,7 +327,7 @@ class CameraGroup(pygame.sprite.Group):
         self.half_w = self.display_surface.get_size()[0] // 2
         self.half_h = self.display_surface.get_size()[1] // 2
 
-    def custom_draw(self, player):
+    def custom_draw(self, player, enemy):
 
         """get the player offset"""
         self.offset.x = player.collision_rect.centerx - self.half_w
@@ -324,6 +340,8 @@ class CameraGroup(pygame.sprite.Group):
             # Draw the sprite's collision rect
         
         collision_rect = player.collision_rect.move(-self.offset.x, -self.offset.y)
+        ecollision_rect = enemy.collision_rect.move(-self.offset.x, -self.offset.y)
+        
         if player.status == "crouch":
             collision_rect.inflate_ip(0, -30)
         if player.status == "fall":
@@ -332,7 +350,8 @@ class CameraGroup(pygame.sprite.Group):
             collision_rect.inflate_ip(0, -30)
             collision_rect.move_ip(0, -15)
 
-        pygame.draw.rect(self.display_surface, (255, 0, 0), collision_rect, 2)
+        # pygame.draw.rect(self.display_surface, (255, 0, 0), collision_rect, 2)
+        # pygame.draw.rect(self.display_surface, (255, 0, 0), ecollision_rect, 2)
         
 
     def enemy_update(self, player):

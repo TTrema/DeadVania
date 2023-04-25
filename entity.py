@@ -79,6 +79,8 @@ class Entity(pygame.sprite.Sprite):
                                 self.on_ground = True
                                 self.d_jump_on = True
                                 self.dive_kick = False
+                            else:
+                                self.on_ground = False
                     else:
                         self.jumpdown_timer = pygame.time.get_ticks()
 

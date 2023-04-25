@@ -13,6 +13,8 @@ joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_coun
 global screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), flags=pygame.SCALED)
 
+newgame = True
+
 
 
 class Game:
@@ -24,7 +26,7 @@ class Game:
         self.screen = screen
         pygame.display.set_caption("Dead Vania")
         self.clock = pygame.time.Clock()
-
+        self.newgame = True
         self.level = Level()
 
         """ player setup """
@@ -50,11 +52,11 @@ class Game:
 
     def run(self):
         self.playing = True
-        
-        
-
+        self.newgame = False
+               
         while self.playing:
             if self.level.stage_clear_flag == True:
+                self.reset()
                 self.playing = False
             
 
@@ -155,8 +157,9 @@ class Game:
                     if pygame.joystick.Joystick(0).get_axis(1) > 0.5 and self.player.attack_id == "backdash":
                         self.player.recovery = False
 
-            self.screen.fill("black")
-            self.level.run()
+            self.screen.fill((135, 206, 235))
+            self.level.run()                
+            self.check_game_over()
             pygame.display.update()
             self.clock.tick(FPS)
 
@@ -191,9 +194,7 @@ class Game:
 
                 if self.player.status == "wallhang":
                     self.player.walljump = True
-                    
-            
-
+                              
                 self.player.jumping = True
 
     def double_jump(self):
@@ -225,6 +226,25 @@ class Game:
                 self.player.attack_id = "blaze"
                 self.player.create_magic(style, strength, cost)
 
+    def check_game_over(self):
+        if self.player.health <= 0:
+            self.player.health = 100           
+            self.reset()
+            self.playing = False
+                     
+    def reset(self):
+        self.level = Level()
+        self.player = self.level.player
+        self.magic_index = 0
+        self.newgame = True
+
+        """ control setup """
+
+        save, joy_save = load_save()
+        self.control_handler = Controls_Handler(save, joy_save)
+        self.control = self.control_handler.controls
+        self.joystick = self.control_handler.joystick
+
 
 class MainMenu:
     def __init__(self):
@@ -247,7 +267,7 @@ class MainMenu:
         self.selected = 0
 
         while True:
-            if self.playing:
+            if not self.game.newgame:
                 self.menu_options = ["Return", "Options", "Exit"]
             else:
                 self.menu_options = ["Start", "Options", "Exit"]
@@ -263,6 +283,7 @@ class MainMenu:
             elif actions["Jump"] or actions["Start"]:
                 if self.selected == 0:
                     self.playing = True
+                    self.newgame = False
                     self.game.run()
                     self.main_menu_running = False
                 elif self.selected == 1:
@@ -282,7 +303,34 @@ class MainMenu:
         self.clock.tick(FPS)
 
     def options_menu(self):
-        self.menu_options = ["Sound", "Keyboard", "Joystick", "Back"]
+        self.menu_options = ["Keyboard", "Back"]
+        self.selected = 0
+        running = True
+
+        while running:
+            self.display_menu_options(self.menu_options, self.selected)
+            pygame.display.update()
+            reset_keys(actions)
+            input()
+            if actions["Attack"] or actions["Escape"]:
+                running = False
+
+            if actions["Down"]:
+                self.selected = (self.selected + 1) % len(self.menu_options)
+            elif actions["Up"]:
+                self.selected = (self.selected - 1) % len(self.menu_options)
+            elif actions["Jump"] or actions["Start"]:
+                if self.selected == 0:
+                    self.Keyboard()
+
+                elif self.selected == 1:
+                    running = False
+
+            self.update_menu()
+            
+            
+    def game_over(self):
+        self.menu_options = ["yes", "No"]
         self.selected = 0
         running = True
 
@@ -303,15 +351,9 @@ class MainMenu:
                     pass
 
                 elif self.selected == 1:
-                    self.Keyboard()
-
-                elif self.selected == 2:
                     pass
 
-                elif self.selected == 3:
-                    running = False
-
-            self.update_menu()
+            self.update_menu()            
 
     def Keyboard(self):
         canvas = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))

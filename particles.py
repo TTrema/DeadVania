@@ -12,6 +12,7 @@ class AnimationPlayer:
 			'flame': import_folder('./graphics/particles/flame/frames'),
 			'aura': import_folder('./graphics/particles/aura'),
 			'heal': import_folder('./graphics/particles/heal/frames'),
+			'fireball': import_folder('./graphics/particles/fireball'),
 			
 			# attacks 
 			'claw': import_folder('./graphics/particles/claw'),
@@ -61,6 +62,7 @@ class AnimationPlayer:
 
 	def create_particles(self,animation_type,pos,groups):
 		animation_frames = self.frames[animation_type]
+		print(animation_frames)
 		ParticleEffect(pos,animation_frames,groups,animation_type)
 
 
@@ -73,6 +75,8 @@ class ParticleEffect(pygame.sprite.Sprite):
 		self.animation_type = animation_type
 
 		self.pos = pos
+		self.startup = 0
+		self.hit_delay = 0
 		self.startup = 0
 		if animation_type == 'flame':
 			self.hit_delay = 600

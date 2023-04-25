@@ -1,0 +1,63 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 581,
+                "y": 719
+            }
+        },
+        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/tileset/Tiles.tsx": {
+            "dynamicWrapping": true
+        },
+        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/tileset/Tiles2.tsx": {
+            "dynamicWrapping": false
+        },
+        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/tileset/background.tsx": {
+            "dynamicWrapping": true
+        },
+        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/tileset/bookshelf_1.tsx": {
+            "dynamicWrapping": false
+        },
+        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/tileset/forest.tsx": {
+            "scaleInDock": 1
+        },
+        "Terrain (32x32).tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1",
+    "last.imagePath": "E:/Meus Documentos/Dev/Python/2D Platformer - Copia/graphics/terrain",
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.tileHeight": 64,
+    "map.tileWidth": 64,
+    "openFiles": [
+        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1.tmx"
+    ],
+    "project": "untitled.tiled-project",
+    "recentFiles": [
+        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1.tmx",
+        "tileset.tsx",
+        "Terrain (32x32).tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 64,
+        "width": 64
+    }
+}
