@@ -327,11 +327,20 @@ class CameraGroup(pygame.sprite.Group):
         self.half_w = self.display_surface.get_size()[0] // 2
         self.half_h = self.display_surface.get_size()[1] // 2
 
+        """ creating the floor """
+        self.floor_surf = pygame.image.load("./levels/level1.png").convert_alpha()
+        self.bg_size = 2
+        self.floor_surf = pygame.transform.scale(self.floor_surf, (int(self.floor_surf.get_width() * (self.bg_size, self.bg_size)[0]), int(self.floor_surf.get_height() * (self.bg_size, self.bg_size)[1])))
+        self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
+
     def custom_draw(self, player, enemy):
 
         """get the player offset"""
         self.offset.x = player.collision_rect.centerx - self.half_w
         self.offset.y = player.collision_rect.centery - self.half_h
+        
+        floor_offset_pos = self.floor_rect.topleft - self.offset
+        self.display_surface.blit(self.floor_surf, floor_offset_pos)
 
         for sprite in self.sprites():
             offset_pos = sprite.rect.topleft - self.offset

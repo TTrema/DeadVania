@@ -3,18 +3,26 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1.tmx",
+    "activeFile": "../level2.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
-        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1.tmx": {
-            "scale": 1,
+        "../level2.tmx": {
+            "scale": 0.25,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 581,
-                "y": 719
+                "x": 1136,
+                "y": 8648
+            }
+        },
+        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 824.2424242424242,
+                "y": 672.7272727272727
             }
         },
         "E:/Meus Documentos/Dev/Python/2D Platformer/levels/tileset/Tiles.tsx": {
@@ -36,6 +44,10 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "terrain_tiles.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "tileset.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -44,13 +56,17 @@
     "last.exportedFilePath": "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1",
     "last.imagePath": "E:/Meus Documentos/Dev/Python/2D Platformer - Copia/graphics/terrain",
     "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedFormat": "tmx",
     "map.tileHeight": 64,
     "map.tileWidth": 64,
     "openFiles": [
-        "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1.tmx"
+        "../level2.tmx",
+        "terrain_tiles.tsx"
     ],
     "project": "untitled.tiled-project",
     "recentFiles": [
+        "../level2.tmx",
+        "terrain_tiles.tsx",
         "E:/Meus Documentos/Dev/Python/2D Platformer/levels/level1.tmx",
         "tileset.tsx",
         "Terrain (32x32).tsx"

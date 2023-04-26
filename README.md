@@ -7,7 +7,7 @@
 
 ## Características:
 
-### Versão BetaV0.01
+### Versão BetaV0.02
 
 
 <ul>
