@@ -44,6 +44,8 @@ class Player(Entity):
         self.jumpable_sprites = jumpable_sprites
 
         self.collision_rect = pygame.Rect(self.rect.topleft, (50, 70))
+        self.old_rect = self.collision_rect.copy()
+        self.pos = pygame.math.Vector2(self.collision_rect.topleft)
         self.start_height = 0
         self.start_width = 0
 
@@ -209,15 +211,17 @@ class Player(Entity):
             self.energy = self.stats["energy"]
 
     def backdash(self):
-        if self.on_ground:
-            if self.recovery:
-                if self.attack_id == "backdash":
-                    self.direction.x = 0
-                    self.direction.y = 0
+
+        if self.recovery:
+            if self.attack_id == "backdash":
+                if self.on_ground:
                     if self.facing_right:
                         self.collision_rect.centerx -= 10
                     else:
                         self.collision_rect.centerx += 10
+                else:
+                    self.recovery = False
+
 
     def divekick(self):
         self.direction.y += 20
@@ -225,13 +229,14 @@ class Player(Entity):
         self.create_attack()
 
     def update(self):
+        self.old_rect = self.collision_rect.copy()
         self.input()
         self.get_status()
         self.move(self.speed)
         self.backdash()
-        self.horizontal_collisions()
+        self.horizontal_collisions('horizontal')
         self.apply_gravity()
-        self.vertical_collisions()
+        self.horizontal_collisions('vertical')
         self.animate()
         self.energy_recovery()
         self.cooldowns()

@@ -22,6 +22,8 @@ class Enemy(Entity):
         """ movement """
         self.rect = self.image.get_rect(topleft=pos)
         self.collision_rect = self.rect
+        self.old_rect = self.collision_rect.copy()
+        self.pos = pygame.math.Vector2(self.collision_rect.topleft)
         self.collision_sprites = collision_sprites
         self.jumpable_sprites = jumpable_sprites
 
@@ -190,7 +192,7 @@ class Enemy(Entity):
                 player.dive_kick = False 
 
             # Create and display damage number sprite
-            damage_text = self.damage_font.render(str(damage_amount), True, (255, 0, 0))
+            damage_text = self.damage_font.render(str(int(damage_amount)), True, (255, 0, 0))
             damage_sprite = DamageNumberSprite((self.rect.centerx, self.rect.top), damage_text)
             for sprite_group in self.sprite_groups:
                 sprite_group.add(damage_sprite)
@@ -214,6 +216,7 @@ class Enemy(Entity):
         self.collision_rect.y += self.direction.y * speed
 
     def update(self):
+        self.old_rect = self.collision_rect.copy()
 
         self.hit_reaction()
 
@@ -221,19 +224,17 @@ class Enemy(Entity):
             self.fly(self.speed)
         else:
             self.move(self.speed) 
- 
-                          
-            
+                                      
         self.animate()
         self.check_death()
         self.cooldowns()
         if not self.can_fly:
-            self.horizontal_collisions()     
+            self.horizontal_collisions('horizontal')  
             self.apply_gravity()  
-            self.vertical_collisions()
+            self.horizontal_collisions('vertical')
         else:
-            self.vertical_collisions()
-            self.horizontal_collisions()   
+            self.horizontal_collisions('vertical')
+            self.horizontal_collisions('horizontal')
             
         if self.direction.x < 0:
             self.facing_right = False

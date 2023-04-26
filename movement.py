@@ -30,10 +30,11 @@ def movement(player):
         player.hold_up = False
 
     if hat_1 == -1 or axis_1 > 0.2 or keypress[player.control_handler.controls["Down"]]:
-
         player.crouch = True
         if (player.status == "fall" or "divekck") and not player.on_ground:
-            pass
+            player.jumpdown_timer = pygame.time.get_ticks()
+            player.jumpdown = True
+            print('b')
     else:
         player.crouch = False
 

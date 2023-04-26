@@ -74,13 +74,12 @@ class Level:
                             tile_surface = terrain_tile_list[int(col)]
                             if style == "battle_Tile":
                                 StaticTile((x, y), [self.visible_sprites, self.collision_sprites], tile_surface)
-                            if style == "battle_decoration":
-                                StaticTile((x, y), [self.visible_sprites], tile_surface)
+                            # if style == "battle_decoration":
+                            #     StaticTile((x, y), [self.visible_sprites], tile_surface)
                             if style == "battle_platform":
-                                StaticTile((x, y), [self.visible_sprites], tile_surface)
-                                Bridge((x, y), [self.visible_sprites, self.jumpable_sprites])
-                            if style == "battle_background":
-                                StaticTile((x, y), [self.visible_sprites], tile_surface)
+                                Bridge((x, y), [self.jumpable_sprites])
+                            # if style == "battle_background":
+                            #     StaticTile((x, y), [self.visible_sprites], tile_surface)
                             if style == "battle_spawnarea":
                                 if col == '615':
                                     Enemy(
@@ -297,13 +296,14 @@ class Level:
         
  
         # self.display_surface.blit(self.background, (0, 0))
+        self.display_surface = pygame.display.get_surface()
         self.visible_sprites.custom_draw(self.player, self.enemy)
         self.stage_clear()
         self.ui.display(self.player)
-        # debug(self.enemy.status)
-        # debug(self.enemy.on_ground, 40)
-        # debug(self.player.on_ground, 80)
-        # debug(self.player.collision_rect.y, 120)
+        debug(self.enemy.status)
+        debug(self.enemy.on_ground, 40)
+        debug(self.player.jumpdown_timer, 80)
+        debug(self.player.jumpdown, 120)
 
         if self.game_paused:
 
@@ -349,7 +349,9 @@ class CameraGroup(pygame.sprite.Group):
             # Draw the sprite's collision rect
         
         collision_rect = player.collision_rect.move(-self.offset.x, -self.offset.y)
+        old_rect = player.old_rect.move(-self.offset.x, -self.offset.y)
         ecollision_rect = enemy.collision_rect.move(-self.offset.x, -self.offset.y)
+        old_enemy_rect = enemy.old_rect.move(-self.offset.x, -self.offset.y)
         
         if player.status == "crouch":
             collision_rect.inflate_ip(0, -30)
@@ -360,7 +362,9 @@ class CameraGroup(pygame.sprite.Group):
             collision_rect.move_ip(0, -15)
 
         # pygame.draw.rect(self.display_surface, (255, 0, 0), collision_rect, 2)
+        # pygame.draw.rect(self.display_surface, (0, 255, 0), old_rect, 2)
         # pygame.draw.rect(self.display_surface, (255, 0, 0), ecollision_rect, 2)
+        # pygame.draw.rect(self.display_surface, (0, 255, 0), old_enemy_rect, 2)
         
 
     def enemy_update(self, player):

@@ -16,7 +16,6 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), flags=pygame.SCA
 newgame = True
 
 
-
 class Game:
     def __init__(self):
         # general setup
@@ -40,9 +39,6 @@ class Game:
         self.control_handler = Controls_Handler(save, joy_save)
         self.control = self.control_handler.controls
         self.joystick = self.control_handler.joystick
-        
-
-        
 
         """ sound """
 
@@ -53,21 +49,20 @@ class Game:
     def run(self):
         self.playing = True
         self.newgame = False
-               
+
         while self.playing:
             if self.level.stage_clear_flag == True:
                 self.reset()
                 self.playing = False
-            
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                    
+
                 """ Joystick setup """
-                                           
-                self.keypress = pygame.key.get_pressed()                           
+
+                self.keypress = pygame.key.get_pressed()
                 if len(joysticks) > 0:
                     self.joy = pygame.joystick.Joystick(0).get_button
                     self.hat_0 = pygame.joystick.Joystick(0).get_hat(0)[0]
@@ -76,9 +71,6 @@ class Game:
                     self.axis_1 = pygame.joystick.Joystick(0).get_axis(1)
                 else:
                     self.joy, self.hat_0, self.hat_1, self.axis_0, self.axis_1 = None, 0, 0, 0, 0
-                    
-
-                    
 
                 """ keyboard inputs """
 
@@ -101,7 +93,7 @@ class Game:
                     if event.key == self.control_handler.controls["Jump"]:
                         self.double_jump()
 
-                    if event.key == self.control_handler.controls["Jump"]:   
+                    if event.key == self.control_handler.controls["Jump"]:
                         self.jump()
 
                     if event.key == self.control_handler.controls["Magic"]:
@@ -114,9 +106,7 @@ class Game:
                     if event.key == self.control_handler.controls["Jump"]:
                         self.player.jumping = False
 
-
                 """ joystick inputs """
-
 
                 if event.type == pygame.JOYBUTTONDOWN:
                     if self.joy(self.joystick["Start"]):
@@ -147,18 +137,16 @@ class Game:
                     if event.button == self.joystick["Jump"]:
                         self.player.jumping = False
 
-
                 if event.type == pygame.JOYHATMOTION:
                     if self.hat_1 == -1 and self.player.attack_id == "backdash":  # down
                         self.player.recovery = False
-         
-                        
+
                 if event.type == pygame.JOYAXISMOTION:
                     if pygame.joystick.Joystick(0).get_axis(1) > 0.5 and self.player.attack_id == "backdash":
                         self.player.recovery = False
 
             self.screen.fill((135, 206, 235))
-            self.level.run()                
+            self.level.run()
             self.check_game_over()
             pygame.display.update()
             self.clock.tick(FPS)
@@ -181,20 +169,18 @@ class Game:
             self.player.weapon_attack_sound.play()
 
     def jump(self):
-
         if not self.player.recovery and (self.player.on_ground or self.player.status == "wallhang"):
             self.player.start_height = self.player.collision_rect.bottom
             self.player.start_width = self.player.collision_rect.right
-  
 
             if self.hat_1 == -1 or self.axis_1 > 0.2 or self.keypress[self.player.control_handler.controls["Down"]]:
+                self.player.jumpdown_timer = pygame.time.get_ticks()
                 self.player.jumpdown = True
-                
-            else:
 
+            else:
                 if self.player.status == "wallhang":
                     self.player.walljump = True
-                              
+
                 self.player.jumping = True
 
     def double_jump(self):
@@ -208,6 +194,7 @@ class Game:
         if not self.player.d_jump_on and not self.player.recovery:
             self.player.direction.y = 0
             self.player.attack_id = "divekick"
+            self.player.jumpdown = True
             self.player.divekick()
 
     def magic(self):
@@ -228,10 +215,10 @@ class Game:
 
     def check_game_over(self):
         if self.player.health <= 0:
-            self.player.health = 100           
+            self.player.health = 100
             self.reset()
             self.playing = False
-                     
+
     def reset(self):
         self.level = Level()
         self.player = self.level.player
@@ -327,8 +314,7 @@ class MainMenu:
                     running = False
 
             self.update_menu()
-            
-            
+
     def game_over(self):
         self.menu_options = ["yes", "No"]
         self.selected = 0
@@ -353,7 +339,7 @@ class MainMenu:
                 elif self.selected == 1:
                     pass
 
-            self.update_menu()            
+            self.update_menu()
 
     def Keyboard(self):
         canvas = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))

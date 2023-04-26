@@ -12,7 +12,6 @@ def import_folder(path):
             size = 64
             if 'sheet' in full_path:
                 if 'worm' in full_path:
-                    print(full_path)
                     size = 90
                 image_surf2 = import_cut_graphics(full_path, size)  
                 for image in image_surf2:
@@ -91,7 +90,6 @@ def write_joy_save(data):
         json.dump(data, file)
 
 def load_save():
-    print('1')
     try:
     # Save is loaded 
         joy_save = load_existing_save('joy.json')

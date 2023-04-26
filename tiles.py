@@ -8,6 +8,7 @@ class Tile(pygame.sprite.Sprite):
         self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
         self.image.fill(TILE_COLOR)
         self.rect = self.image.get_rect(topleft = pos)
+        self.old_rect = self.rect.copy()
         self.mask = pygame.mask.from_surface(self.image)
 
 class StaticTile(Tile):
