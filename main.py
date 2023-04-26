@@ -1,9 +1,9 @@
 import pygame, sys
 from settings import *
 from level import Level
-from controls import Controls_Handler
-from support import load_save, reset_keys
-from input import input, actions
+from data.controls import Controls_Handler
+from data.support import load_save, reset_keys
+from data.input import input, actions
 from pygame._sdl2 import controller
 
 controller.init()

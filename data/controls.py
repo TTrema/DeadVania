@@ -1,5 +1,5 @@
 import pygame, sys
-from support import write_save
+from data.support import write_save
 
 
 class Controls_Handler:
@@ -77,7 +77,7 @@ class Controls_Handler:
 
     def setup(self):
         self.selected = False
-        self.font = pygame.font.Font("RetroFont.ttf", 20)
+        self.font = pygame.font.Font("./graphics/RetroFont.ttf", 20)
         self.cursor_dict = {}
         self.curr_index = 0
         i = 0

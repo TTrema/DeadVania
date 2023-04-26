@@ -1,9 +1,9 @@
 import pygame
 from settings import *
-from entity import Entity
-from support import *
+from data.entity import Entity
+from data.support import *
 import time
-from particles import AnimationPlayer
+from data.particles import AnimationPlayer
 
 
 class Enemy(Entity):

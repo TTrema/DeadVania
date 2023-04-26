@@ -1,11 +1,11 @@
 import pygame
 from settings import *
 from pygame.math import Vector2 as vector
-from support import *
-from entity import Entity
-from controls import Controls_Handler
-from support import load_save
-from movement import movement
+from data.support import *
+from data.entity import Entity
+from data.controls import Controls_Handler
+from data.support import load_save
+from data.movement import movement
 
 
 class Player(Entity):

@@ -1,6 +1,6 @@
 import pygame, sys
-from controls import Controls_Handler
-from support import load_save, reset_keys
+from data.controls import Controls_Handler
+from data.support import load_save, reset_keys
 
 
 save, joy_save = load_save()

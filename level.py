@@ -1,15 +1,15 @@
 import pygame
 from settings import *
-from tiles import Tile, Bridge, StaticTile
-from player import Player
-from support import *
-from enemy import Enemy
+from data.tiles import Tile, Bridge, StaticTile
+from data.player import Player
+from data.support import *
+from data.enemy import Enemy
 from debug import debug
-from attack import Attack, DiveAttack
-from ui import UI
-from particles import AnimationPlayer
-from magic import MagicPlayer
-from upgrade import Upgrade
+from data.attack import Attack, DiveAttack
+from data.ui import UI
+from data.particles import AnimationPlayer
+from data.magic import MagicPlayer
+from data.upgrade import Upgrade
 import random
 
 
@@ -60,71 +60,70 @@ class Level:
         }
         terrain_tile_list = import_cut_graphics_size("./levels/Tiles32.png", 32)
         # self.background = pygame.image.load("./levels/level1.png").convert_alpha()
-        with open('col_info.txt', 'w') as f:
-            for style, layout in layouts.items():
-                for row_index, row in enumerate(layout):
-                    for col_index, col in enumerate(row):
 
-                        if int(col) > 0:
-                            f.write(str(col) + '\n')
-                            
-                            x = col_index * TILE_SIZE
-                            y = row_index * TILE_SIZE
+        for style, layout in layouts.items():
+            for row_index, row in enumerate(layout):
+                for col_index, col in enumerate(row):
 
-                            tile_surface = terrain_tile_list[int(col)]
-                            if style == "battle_Tile":
-                                StaticTile((x, y), [self.visible_sprites, self.collision_sprites], tile_surface)
-                            # if style == "battle_decoration":
-                            #     StaticTile((x, y), [self.visible_sprites], tile_surface)
-                            if style == "battle_platform":
-                                Bridge((x, y), [self.jumpable_sprites])
-                            # if style == "battle_background":
-                            #     StaticTile((x, y), [self.visible_sprites], tile_surface)
-                            if style == "battle_spawnarea":
-                                if col == '615':
-                                    Enemy(
-                                        "smallbee",
-                                        (x, y),
-                                        [self.ani_sprites, self.attackable_sprites],
-                                        self.collision_sprites,
-                                        self.damage_player,
-                                        self.trigger_death_particles,
-                                        self.ani_sprites,
-                                        self.add_exp,
-                                        self.jumpable_sprites,
-                                    )
-                                if col == '565':
-                                    Enemy(
-                                        "worm",
-                                        (x, y),
-                                        [self.ani_sprites, self.attackable_sprites],
-                                        self.collision_sprites,
-                                        self.damage_player,
-                                        self.trigger_death_particles,
-                                        self.ani_sprites,
-                                        self.add_exp,
-                                        self.jumpable_sprites,
-                                    )    
-                                    
-                                if col == '590':
-                                    self.enemy = Enemy(
-                                        "slime",
-                                        (x, y),
-                                        [self.ani_sprites, self.attackable_sprites],
-                                        self.collision_sprites,
-                                        self.damage_player,
-                                        self.trigger_death_particles,
-                                        self.ani_sprites,
-                                        self.add_exp,
-                                        self.jumpable_sprites,
-                                    )
-                                    
-                                if col == '390':
-                                    self.player = Player(
-                                        (x, y), [self.ani_sprites], self.collision_sprites, self.create_attack, self.destroy_attack, self.create_magic, self.jumpable_sprites
-                                    )
-                                if col == '496':
-                                    StaticTile((x, y), [self.end_level_sprites], tile_surface)
+                    if int(col) > 0:
+                        
+                        x = col_index * TILE_SIZE
+                        y = row_index * TILE_SIZE
+
+                        tile_surface = terrain_tile_list[int(col)]
+                        if style == "battle_Tile":
+                            StaticTile((x, y), [self.visible_sprites, self.collision_sprites], tile_surface)
+                        # if style == "battle_decoration":
+                        #     StaticTile((x, y), [self.visible_sprites], tile_surface)
+                        if style == "battle_platform":
+                            Bridge((x, y), [self.jumpable_sprites])
+                        # if style == "battle_background":
+                        #     StaticTile((x, y), [self.visible_sprites], tile_surface)
+                        if style == "battle_spawnarea":
+                            if col == '615':
+                                Enemy(
+                                    "smallbee",
+                                    (x, y),
+                                    [self.ani_sprites, self.attackable_sprites],
+                                    self.collision_sprites,
+                                    self.damage_player,
+                                    self.trigger_death_particles,
+                                    self.ani_sprites,
+                                    self.add_exp,
+                                    self.jumpable_sprites,
+                                )
+                            if col == '565':
+                                Enemy(
+                                    "worm",
+                                    (x, y),
+                                    [self.ani_sprites, self.attackable_sprites],
+                                    self.collision_sprites,
+                                    self.damage_player,
+                                    self.trigger_death_particles,
+                                    self.ani_sprites,
+                                    self.add_exp,
+                                    self.jumpable_sprites,
+                                )    
+                                
+                            if col == '590':
+                                self.enemy = Enemy(
+                                    "slime",
+                                    (x, y),
+                                    [self.ani_sprites, self.attackable_sprites],
+                                    self.collision_sprites,
+                                    self.damage_player,
+                                    self.trigger_death_particles,
+                                    self.ani_sprites,
+                                    self.add_exp,
+                                    self.jumpable_sprites,
+                                )
+                                
+                            if col == '390':
+                                self.player = Player(
+                                    (x, y), [self.ani_sprites], self.collision_sprites, self.create_attack, self.destroy_attack, self.create_magic, self.jumpable_sprites
+                                )
+                            if col == '496':
+                                StaticTile((x, y), [self.end_level_sprites], tile_surface)
                                     
 
     def setup_level(self):
